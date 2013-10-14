@@ -1344,11 +1344,19 @@ public class GitSCM extends SCM implements Serializable {
         if (singleBranch != null){
             env.put(GIT_BRANCH, singleBranch);
         } else if (rev != null) {
-            Branch branch = rev.getBranches().iterator().next();
+            Iterator<Branch> branchIter = rev.getBranches().iterator();
+            Branch branch = branchIter.next();
+            if (branch.getName().endsWith("/HEAD") && branchIter.hasNext()) {
+                branch = branchIter.next();
+            }
             env.put(GIT_BRANCH, branch.getName());
         }
         if (rev != null) {
-            Branch branch = rev.getBranches().iterator().next();
+            Iterator<Branch> branchIter = rev.getBranches().iterator();
+            Branch branch = branchIter.next();
+            if (branch.getName().endsWith("/HEAD") && branchIter.hasNext()) {
+                branch = branchIter.next();
+            }
             String prevCommit = getLastBuiltCommitOfBranch(build, branch);
             if (prevCommit != null) {
                 env.put(GIT_PREVIOUS_COMMIT, prevCommit);
